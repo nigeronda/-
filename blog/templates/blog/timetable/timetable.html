@@ -1,0 +1,199 @@
+<html>
+
+<head>
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+   <title>할일목록</title>
+   <style>
+      /* 선택자 */
+      /* tag, class, id */
+      body {
+         background-color: green
+      }
+
+      h1 {
+         background-color: rgb(11, 156, 59);
+         text-align: center;
+         font-size: 50px
+      }
+
+      .row {
+         background-color: hotpink;
+         padding: 20px;
+      }
+
+      .col-md-6 {
+         text-align: center;
+         padding: 20px;
+      }
+
+      .class {
+         background-color: rgb(211, 14, 14);
+         text-align: right;
+      }
+
+      #myBtn {
+         background-color: darkcyan;
+         color: deeppink;
+      }
+   </style>
+   <script>
+      console.log(location.href);
+   </script>
+</head>
+
+<body>
+   <h1>할 일 목록</h1>
+   <h4>날짜:</h4>
+   <div class=row>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+   </div>
+   <div class=row>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+   </div>
+   <div class=row>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+   </div>
+   <div class=row>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+   </div>
+   <div class=row>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+      </div>
+   </div>
+   <div class=row><input type="textbox" id="myText" placeholder="특별할일"> <input type="textbox" size=30px> 금액 <input
+         type="number" min=0 class=textbox step=500 value=0 id="합계"> 원
+      <input type="button" id="hello" value="확인">
+   </div>
+   <div id="temp"></div>
+
+   <div class="class"> 총합계 <input type="textbox" id="bye" disabled> 원 <input type="button" id="myBtn"
+         value="To do list 모두보기">
+   </div>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+   <script>
+      function getParameter(name) {
+         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+
+      var date = getParameter("date");
+      // console.log(date);
+      // localStorage.getItem(date);
+      // var today = new Date();
+      // console.log(today.toLocaleDateString());
+
+      if (date.length == 0) {
+         var today = new Date();
+         date = today.toLocaleDateString();
+      }
+      if (localStorage.getItem(date) != null) {
+         [ethan, sum, total] = localStorage.getItem(date).split(",");
+         var list = document.getElementsByClassName(`work`);
+         for (var index = 0; index < list.length; index++) {
+            if (ethan[index] == `1`) {
+               list[index].checked = true
+            }
+            else {
+               list[index].checked = false
+            }
+         }
+         document.getElementById(`합계`).value = parseInt(sum);
+         document.getElementById(`bye`).value = parseInt(total);
+      }
+
+      //   var ethan = localStorage.getItem(`checkbox`);
+      //   console.log(ethan);
+      //    var list = document.getElementsByClassName(`work`);
+      //    if(ethan != null){
+      //       for (var index = 0; index < list.length; index++) {
+      //             if(ethan[index] == `1`){
+      //                list[index].checked = true
+      //             }
+      //             else{
+      //                list[index].checked = false
+      //             }
+      //          }
+      //       document.getElementById(`합계`).value=localStorage.getItem(`합계`)
+      //       document.getElementById(`bye`).value=localStorage.getItem(`price`)
+      //    }
+
+      var 금액 = 0;
+      function 코천의_강림() {
+         location.href = `전체보기.html`
+      }
+      document.getElementById(`myBtn`).onclick = 코천의_강림
+      function hello1(e) {
+         금액 += 1000
+         var list = document.getElementsByClassName(`work`);
+         console.log(list);
+         var count = 0;
+         var string = ``;
+         for (var index = 0; index < list.length; index++) {
+            if (list[index].checked) {
+               count += 1000
+               string += `1`
+            }
+            else {
+               string += `0`
+            }
+         }
+
+         // localStorage.setItem(`checkbox`,string);
+         console.log(string);
+         // localStorage.setItem(`합계`,document.getElementById(`합계`).value)
+         document.getElementById(`bye`).value = parseInt(document.getElementById(`합계`).value) + count
+         console.log(document.getElementById(`bye`).value);
+         // localStorage.setItem(`price`,document.getElementById(`bye`).value) 
+         var savedData = [string, document.getElementById(`합계`).value, document.getElementById(`bye`).value];
+         console.log(savedData);
+         if (date.length == 0) {
+            var today = new Date();
+
+            localStorage.setItem(today.toLocaleDateString(), savedData);
+         }
+      }
+      document.getElementById(`hello`).onclick = hello1
+
+      function keyup(e) {
+         // event
+         // console.log(e.keyCode)
+         if (e.keyCode == 13) {
+            e.target.nextElementSibling.focus();
+            // focus
+         }
+      }
+
+      document.getElementById("myText").onkeyup = keyup
+
+      function focus(e) {
+         console.log(e.target.previousElementSibling.value.length);
+         console.log(e.target.previousElementSibling);
+
+         if (e.target.previousElementSibling.value.length == 0) {
+            e.target.previousElementSibling.focus();
+         }
+      }
+
+      document.getElementById("myText").nextElementSibling.onfocus = focus;
+   </script>
+</body>
+
+</html>
