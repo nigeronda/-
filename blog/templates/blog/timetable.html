@@ -45,35 +45,20 @@
 <body>
    <h1>할 일 목록</h1>
    <h4>날짜:</h4>
-   <div class=row>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
+   <input type="hidden" id="date" value="{{date}}">
+   <div id = "content">
+      {% for item in homework %}
+      <div class=row>
+         {% for item2 in item %}
+         <div class=col-md-6>
+            <input type="hidden" class="id" value="{{item2.id}}">
+            <input type=checkbox class=is_completed {% if item2.is_completed %}checked{% endif %}>
+            <input type=textbox size=10px class="title" value="{{ item2.title }}">
+            <input type=textbox size=30px class="memo"  value="{{ item2.memo }}">
+         </div>
+         {% endfor %}
       </div>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
-      </div>
-   </div>
-   <div class=row>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
-      </div>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
-      </div>
-   </div>
-   <div class=row>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
-      </div>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
-      </div>
-   </div>
-   <div class=row>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
-      </div>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
-      </div>
-   </div>
-   <div class=row>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
-      </div>
-      <div class=col-md-6><input type=checkbox class=work> <input type=textbox size=10px> <input type=textbox size=30px>
-      </div>
+      {% endfor %}
    </div>
    <div class=row><input type="textbox" id="myText" placeholder="특별할일"> <input type="textbox" size=30px> 금액 <input
          type="number" min=0 class=textbox step=500 value=0 id="합계"> 원
@@ -81,7 +66,9 @@
    </div>
    <div id="temp"></div>
 
-   <div class="class"> 총합계 <input type="textbox" id="bye" disabled> 원 <input type="button" id="myBtn"
+   <div class="class">
+      <input type="button" id="add_btn" value="데이터 추가하기">
+      총합계 <input type="textbox" id="bye" disabled> 원 <input type="button" id="myBtn"
          value="To do list 모두보기">
    </div>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -137,7 +124,7 @@
 
       var 금액 = 0;
       function 코천의_강림() {
-         location.href = `전체보기.html`
+         location.href = `./VIOL`
       }
       document.getElementById(`myBtn`).onclick = 코천의_강림
       function hello1(e) {
@@ -193,6 +180,90 @@
       }
 
       document.getElementById("myText").nextElementSibling.onfocus = focus;
+
+      function mychange(e) {
+         is_completed = e.target.parentNode.querySelector(".is_completed").checked;
+         title = e.target.parentNode.querySelector(".title").value;
+         memo = e.target.parentNode.querySelector(".memo").value;
+         id = e.target.parentNode.querySelector(".id").value;
+         $.ajax(
+            {
+               type:"POST",
+               url:"./update",
+               data: {
+                  'id': id,
+                  'title': title,
+                  'memo': memo,
+                  'is_completed': is_completed
+               },
+               dataType: "json",
+               success: (data)=>{console.log(data.data)},
+               error: (log)=>{alert("실패"+log)}
+            }
+         )
+      }
+      
+      var list1 = document.getElementsByClassName("is_completed");
+      for (let i = 0; i < list1.length; i++) {
+         list1[i].onclick = mychange;
+      }
+      
+      var list2 = document.getElementsByClassName("title");
+      for (let i = 0; i < list2.length; i++) {
+         list2[i].onchanged = mychange;
+      }
+      var list3 = document.getElementsByClassName("memo");
+      for (let i = 0; i < list3.length; i++) {
+         list3[i].onchanged = mychange;
+      }
+
+      document.getElementById("add_btn").onclick = function(e) {
+         $.ajax(
+            {
+               type:"POST",
+               url:"./create",
+               data: {
+                  'title': "",
+                  'memo': "",
+                  'is_completed': false,
+                  'date': document.getElementById("date").value
+               },
+               dataType: "json",
+               success: (data)=>{
+                  items = document.getElementsByClassName("col-md-6");
+                  if (items.length % 2 == 1) {
+                     items[items.length - 1].parentNode.innerHTML +=
+                     `<div class=col-md-6>
+                        <input type="hidden" class="id" value="${data.data}">
+                        <input type=checkbox class=is_completed>
+                        <input type=textbox size=10px class="title">
+                        <input type=textbox size=30px class="memo">
+                     </div>`;
+                     
+                  } else {
+                     items[items.length - 1].parentNode.parentNode.innerHTML +=
+                     `<div class="row">
+                        <div class=col-md-6>
+                           <input type="hidden" class="id" value="${data.data}">
+                           <input type=checkbox class=is_completed>
+                           <input type=textbox size=10px class="title">
+                           <input type=textbox size=30px class="memo">
+                        </div>
+                     </div>`;
+                  }
+
+                  var list1 = document.getElementsByClassName("is_completed");
+                  list1[list1.length - 1].onclick = mychange;
+                  var list2 = document.getElementsByClassName("title");
+                  list2[list2.length - 1].onchanged = mychange;
+                  var list3 = document.getElementsByClassName("memo");
+                  list3[list3.length - 1].onchanged = mychange;
+               },
+               error: (log)=>{alert("실패"+log)}
+            }
+         )
+         
+      }
    </script>
 </body>
 
